@@ -1,248 +1,250 @@
 import turtle
 import random
 
-# Create screen object
-screen = turtle.Screen()
-screen.bgcolor("gray")
-screen.setup(800, 800)
-screen.title("Chessboard")
+# Constants
+BOARD_SIZE = 800
+SQUARE_SIZE = BOARD_SIZE // 8
+PIECE_SIZE = SQUARE_SIZE // 2
 
-# Create turtle object
-pen = turtle.Turtle()
-pen.speed(0)
+# Colors
+WHITE = "white"
+BLACK = "black"
+GRAY = "gray"
+GOLD = "gold"
+SILVER = "silver"
+BROWN = "brown"
 
-# Method to draw square
-def draw_square(size, color):
-    pen.fillcolor(color)
-    pen.begin_fill()
-    for _ in range(4):
-        pen.forward(size)
-        pen.left(90)
-    pen.end_fill()
+# Piece types
+KING = "king"
+QUEEN = "queen"
+ROOK = "rook"
+BISHOP = "bishop"
+KNIGHT = "knight"
+PAWN = "pawn"
 
-# Method to draw chessboard
-def draw_chessboard(size):
-    for i in range(8):
-        for j in range(8):
-            # Alternate colors
-            color = "black" if (i + j) % 2 == 0 else "white"
-            pen.penup()
-            pen.setpos(j * size, i * size)
-            pen.pendown()
-            draw_square(size, color)
+class Piece:
+    def __init__(self, piece_type, color, x, y):
+        self.piece_type = piece_type
+        self.color = color
+        self.x = x
+        self.y = y
 
-# Method to draw chess pieces
-def draw_piece(size, x, y, piece, color):
-    pen.penup()
-    pen.setpos(x * size + size / 2, y * size + size / 2)
-    pen.pendown()
-    if piece == "king":
-        pen.color("gold" if color == "white" else "brown")
-        pen.begin_fill()
-        pen.circle(size / 2)
-        pen.end_fill()
-    elif piece == "queen":
-        pen.color("silver" if color == "white" else "gray")
-        pen.begin_fill()
-        pen.circle(size / 2)
-        pen.end_fill()
-    elif piece == "rook":
-        pen.color("black" if color == "black" else "white")
-        pen.begin_fill()
-        for _ in range(4):
-            pen.forward(size / 2)
-            pen.left(90)
-        pen.end_fill()
-    elif piece == "bishop":
-        pen.color("black" if color == "black" else "white")
-        pen.begin_fill()
-        for _ in range(4):
-            pen.forward(size / 2)
-            pen.left(90)
-        pen.end_fill()
-    elif piece == "knight":
-        pen.color("gray" if color == "white" else "brown")
-        pen.begin_fill()
-        pen.circle(size / 2)
-        pen.end_fill()
-    elif piece == "pawn":
-        pen.color("brown" if color == "white" else "gray")
-        pen.begin_fill()
-        pen.circle(size / 2)
-        pen.end_fill()
+class Board:
+    def __init__(self):
+        self.board = [[None for _ in range(8)] for _ in range(8)]
+        self.initialize_pieces()
 
-# Method to handle piece movement
-def move_piece(size, x1, y1, x2, y2):
-    piece = board[y1][x1]
-    color = "white" if y1 < 2 else "black"
-    board[y1][x1] = None
-    board[y2][x2] = piece
-    draw_chessboard(size)
-    draw_pieces(size)
+    def initialize_pieces(self):
+        for i in range(8):
+            self.board[1][i] = Piece(PAWN, WHITE, i, 1)
+            self.board[6][i] = Piece(PAWN, BLACK, i, 6)
 
-# Method to handle castling
-def castle(size, x1, y1, x2, y2):
-    if x1 == 0 and y1 == 0 and x2 == 3 and y2 == 0:
-        board[y2][x2] = board[y1][x1]
-        board[y1][x1] = None
-        board[y2][x2 - 1] = board[y1][x1 + 3]
-        board[y1][x1 + 3] = None
-    elif x1 == 7 and y1 == 0 and x2 == 5 and y2 == 0:
-        board[y2][x2] = board[y1][x1]
-        board[y1][x1] = None
-        board[y2][x2 + 1] = board[y1][x1 - 4]
-        board[y1][x1 - 4] = None
-    draw_chessboard(size)
-    draw_pieces(size)
+        self.board[0][0] = Piece(ROOK, WHITE, 0, 0)
+        self.board[0][1] = Piece(KNIGHT, WHITE, 1, 0)
+        self.board[0][2] = Piece(BISHOP, WHITE, 2, 0)
+        self.board[0][3] = Piece(QUEEN, WHITE, 3, 0)
+        self.board[0][4] = Piece(KING, WHITE, 4, 0)
+        self.board[0][5] = Piece(BISHOP, WHITE, 5, 0)
+        self.board[0][6] = Piece(KNIGHT, WHITE, 6, 0)
+        self.board[0][7] = Piece(ROOK, WHITE, 7, 0)
 
-# Method to handle en passant
-def en_passant(size, x1, y1, x2, y2):
-    if board[y1][x1] == "pawn" and board[y2][x2] == None and abs(x1 - x2) == 1:
-        board[y2][x2] = board[y1][x1]
-        board[y1][x1] = None
-        board[y2 - 1][x2] = None
-    draw_chessboard(size)
-    draw_pieces(size)
+        self.board[7][0] = Piece(ROOK, BLACK, 0, 7)
+        self.board[7][1] = Piece(KNIGHT, BLACK, 1, 7)
+        self.board[7][2] = Piece(BISHOP, BLACK, 2, 7)
+        self.board[7][3] = Piece(QUEEN, BLACK, 3, 7)
+        self.board[7][4] = Piece(KING, BLACK, 4, 7)
+        self.board[7][5] = Piece(BISHOP, BLACK, 5, 7)
+        self.board[7][6] = Piece(KNIGHT, BLACK, 6, 7)
+        self.board[7][7] = Piece(ROOK, BLACK, 7, 7)
 
-# Method to handle promotion
-def promote(size, x, y):
-    piece = board[y][x]
-    if piece == "pawn" and y == 7:
-        board[y][x] = "queen"
-    draw_chessboard(size)
-    draw_pieces(size)
+    def draw_board(self):
+        screen = turtle.Screen()
+        screen.setup(BOARD_SIZE, BOARD_SIZE)
+        screen.title("Chess Game")
 
-# Method to check for check
-def check(size):
-    king_x, king_y = None, None
-for i in range(8):
-        for j in range(8):
-            if board[j][i] == "king":
-                king_x, king_y = i, j
-                break
-        if king_x != None:
-            break
-    for i in range(8):
-        for j in range(8):
-            piece = board[j][i]
-            if piece != None and piece != "king":
-                x, y = i, j
-                if abs(x - king_x) == 1 and abs(y - king_y) == 1:
-                    return True
-                elif x == king_x and abs(y - king_y) == 1:
-                    return True
-                elif y == king_y and abs(x - king_x) == 1:
-                    return True
-    return False
-
-# Method to check for checkmate
-def checkmate(size):
-    if check(size):
         for i in range(8):
             for j in range(8):
-                piece = board[j][i]
-                if piece != None and piece != "king":
-                    x, y = i, j
-                    for k in range(8):
-                        for l in range(8):
-                            if board[l][k] == None:
-                                move_piece(size, x, y, k, l)
-                                if not check(size):
-                                    return False
-                                move_piece(size, k, l, x, y)
-                if piece == "king":
-                    x, y = i, j
-                    for k in range(8):
-                        for l in range(8):
-                            if board[l][k] == None:
-                                move_piece(size, x, y, k, l)
-                                if not check(size):
-                                    return False
-                                move_piece(size, k, l, x, y)
-        return True
-    return False
+                if (i + j) % 2 == 0:
+                    turtle.penup()
+                    turtle.goto(j * SQUARE_SIZE, i * SQUARE_SIZE)
+                    turtle.pendown()
+                    turtle.fillcolor(WHITE)
+                    turtle.begin_fill()
+                    for _ in range(4):
+                        turtle.forward(SQUARE_SIZE)
+                        turtle.right(90)
+                    turtle.end_fill()
+                else:
+                    turtle.penup()
+                    turtle.goto(j * SQUARE_SIZE, i * SQUARE_SIZE)
+                    turtle.pendown()
+                    turtle.fillcolor(BLACK)
+                    turtle.begin_fill()
+                    for _ in range(4):
+                        turtle.forward(SQUARE_SIZE)
+                        turtle.right(90)
+                    turtle.end_fill()
 
-# Initialize board
-board = [
-    ["rook", "knight", "bishop", "queen", "king", "bishop", "knight", "rook"],
-    ["pawn", "pawn", "pawn", "pawn", "pawn", "pawn", "pawn", "pawn"],
-    [None, None, None, None, None, None, None, None],
-    [None, None, None, None, None, None, None, None],
-    [None, None, None, None, None, None, None, None],
-    [None, None, None, None, None, None, None, None],
-    ["pawn", "pawn", "pawn", "pawn", "pawn", "pawn", "pawn", "pawn"],
-    ["rook", "knight", "bishop", "queen", "king", "bishop", "knight", "rook"]
-]
+    def draw_pieces(self):
+        for i in range(8):
+            for j in range(8):
+                piece = self.board[i][j]
+                if piece is not None:
+                    turtle.penup()
+                    turtle.goto(j * SQUARE_SIZE + SQUARE_SIZE // 2, i * SQUARE_SIZE + SQUARE_SIZE // 2)
+                    turtle.pendown()
+                    if piece.piece_type == KING:
+                        turtle.fillcolor(GOLD if piece.color == WHITE else BROWN)
+                        turtle.begin_fill()
+                        turtle.circle(PIECE_SIZE // 2)
+                        turtle.end_fill()
+                    elif piece.piece_type == QUEEN:
+                        turtle.fillcolor(SILVER if piece.color == WHITE else GRAY)
+                        turtle.begin_fill()
+                        turtle.circle(PIECE_SIZE // 2)
+                        turtle.end_fill()
+                    elif piece.piece_type == BISHOP:
+                        turtle.fillcolor(WHITE if piece.color == WHITE else BLACK)
+                        turtle.begin_fill()
+                        for _ in range(4):
+                            turtle.forward(PIECE_SIZE // 2)
+                            turtle.right(90)
+                        turtle.end_fill()
+                    elif piece.piece_type == KNIGHT:
+                        turtle.fillcolor(WHITE if piece.color == WHITE else BLACK)
+                        turtle.begin_fill()
+                        turtle.circle(PIECE_SIZE // 2)
+                        turtle.end_fill()
+                    elif piece.piece_type == PAWN:
+                        turtle.fillcolor(WHITE if piece.color == WHITE else BLACK)
+                        turtle.begin_fill()
+                        turtle.circle(PIECE_SIZE // 2)
+                        turtle.end_fill()
 
-# Method to draw pieces
-def draw_pieces(size):
-    for i in range(8):
-        for j in range(8):
-            piece = board[j][i]
-            if piece != None:
-                color = "white" if j < 2 else "black"
-                draw_piece(size, i, j, piece, color)
+    def handle_move(self, x1, y1, x2, y2):
+        piece = self.board[y1][x1]
+        if piece is not None:
+            self.board[y1][x1] = None
+            self.board[y2][x2] = piece
+            piece.x = x2
+            piece.y = y2
 
-# Driver Code
-if __name__ == "__main__":
-    size = 50
-    draw_chessboard(size)
-    draw_pieces(size)
+    def check_for_check(self):
+        # Check if king is in check
+        for i in range(8):
+            for j in range(8):
+                piece = self.board[i][j]
+                if piece is not None and piece.piece_type == KING:
+                    king_x, king_y = j, i
+                    for x in range(8):
+                        for y in range(8):
+                            opponent_piece = self.board[y][x]
+                            if opponent_piece is not None and opponent_piece.color != piece.color:
+                                if self.is_under_attack(king_x, king_y, opponent_piece):
+                                    return True
+        return False
+
+    def is_under_attack(self, x, y, piece):
+        # Check if piece is under attack by opponent piece
+        if piece.piece_type == KNIGHT:
+            # Check knight moves
+            for dx, dy in [(-2, -1), (-2, 1), (-1, -2), (-1, 2), (1, -2), (1, 2), (2, -1), (2, 1)]:
+                if x + dx >= 0 and x + dx < 8 and y + dy >= 0 and y + dy < 8:
+                    if self.board[y + dy][x + dx] is not None and self.board[y + dy][x + dx].color == piece.color:
+                        return True
+        elif piece.piece_type == BISHOP:
+            # Check bishop moves
+            for dx, dy in [(-1, -1), (-1, 1), (1, -1), (1, 1)]:
+                nx, ny = x + dx, y + dy
+                while nx >= 0 and nx < 8 and ny >= 0 and ny < 8:
+                    if self.board[ny][nx] is not None:
+                        if self.board[ny][nx].color == piece.color:
+                            return True
+                        break
+                    nx += dx
+                    ny += dy
+        elif piece.piece_type == ROOK:
+            # Check rook moves
+            for dx, dy in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
+                nx, ny = x + dx, y + dy
+                while nx >= 0 and nx < 8 and ny >= 0 and ny < 8:
+                    if self.board[ny][nx] is not None:
+                        if self.board[ny][nx].color == piece.color:
+                            return True
+                        break
+                    nx += dx
+                    ny += dy
+        elif piece.piece_type == QUEEN:
+            # Check queen moves
+            for dx, dy in [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)]:
+                nx, ny = x + dx, y + dy
+                while nx >= 0 and nx < 8 and ny >= 0 and ny < 8:
+                    if self.board[ny][nx] is not None:
+                        if self.board[ny][nx].color == piece.color:
+                            return True
+                        break
+                    nx += dx
+                    ny += dy
+        return False
+
+    def check_for_checkmate(self):
+        # Check if king is in checkmate
+        if self.check_for_check():
+            for i in range(8):
+                for j in range(8):
+                    piece = self.board[i][j]
+                    if piece is not None and piece.piece_type == KING:
+                        king_x, king_y = j, i
+                        for x in range(8):
+                            for y in range(8):
+                                 opponent_piece = self.board[y][x]
+                    if opponent_piece is not None and opponent_piece.color != piece.color:
+                                    if self.is_under_attack(king_x, king_y, opponent_piece):
+                                        # Check if king can move to safety
+                                        for dx, dy in [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)]:
+                                            nx, ny = king_x + dx, king_y + dy
+                                            if nx >= 0 and nx < 8 and ny >= 0 and ny < 8:
+                                                if self.board[ny][nx] is None:
+                                                    # Simulate king move
+                                                    self.board[king_y][king_x] = None
+                                                    self.board[ny][nx] = piece
+                                                    piece.x = nx
+                                                    piece.y = ny
+                                                    # Check if king is still under attack
+                                                    if not self.is_under_attack(nx, ny, opponent_piece):
+                                                        # King can move to safety, not checkmate
+                                                        return False
+                                                    # Revert simulated king move
+                                                    self.board[king_y][king_x] = piece
+                                                    self.board[ny][nx] = None
+                                        # King cannot move to safety, checkmate
+                                        return True
+        # King is not in check, not checkmate
+        return False
+
+def main():
+    board = Board()
+    board.draw_board()
+    board.draw_pieces()
 
     # Handle user input
     def handle_input():
-        user_input = screen.textinput("Enter move", "Enter move (e.g., e2e4)")
-        if user_input != None:
+        user_input = turtle.Screen.textinput("Enter move", "Enter move (e.g., e2e4)")
+        if user_input is not None:
             move = user_input.split("e")
             move = [int(x) for x in move]
-            move_piece(size, move[0] % 8, move[0] // 8, move[1] % 8, move[1] // 8)
-            if checkmate(size):
+            board.handle_move(move[0] % 8, move[0] // 8, move[1] % 8, move[1] // 8)
+            board.draw_board()
+            board.draw_pieces()
+            if board.check_for_checkmate():
                 print("Checkmate!")
-            elif check(size):
-                print("Check!")
 
     # Create button to handle user input
-    button = turtle.Button(screen, handle_input, "Make move")
+    button = turtle.Button(turtle.Screen, handle_input, "Make move")
     button.place(x=350, y=350)
 
     # Keep the window open
     turtle.done()
 
-
-
-
-
-"""
-        Chess Game
-A simple yet robust implementation of a chess game using Python and the Turtle graphics library.
-Features
-A graphical representation of a chessboard
-Pieces are displayed on the board with distinct colors and shapes
-User input is accepted to make moves in standard algebraic notation (e.g., e2e4)
-Basic check and checkmate detection with visual indicators
-Castling, en passant, and pawn promotion are supported
-A simple AI opponent is available for solo play
-Optional sound effects for move validation and check/checkmate detection
-Usage
-Run the script using Python (e.g., python chess_game.py)
-A window will appear displaying the chessboard
-To make a move, click on the "Make move" button
-Enter your move in standard algebraic notation (e.g., e2e4)
-Click "OK" to submit your move
-To enable AI opponent, select "AI Opponent" from the options menu
-Requirements
-Python 3.x
-Turtle graphics library (included with Python)
-Optional: simpleaudio library for sound effects
-Future Development
-Improve AI opponent with more advanced algorithms
-Add support for saving and loading games
-Implement a more intuitive user interface
-Add additional sound effects and visual indicators
-License
-This code is released under the MIT License. See LICENSE.txt for details.
-Contributing
-Contributions are welcome! If you'd like to contribute to this project, please fork the repository and submit a pull request.
-Acknowledgments
-Special thanks to the Python and Turtle graphics communities for their support and resources.
-"""
+if __name__ == "__main__":
+    main()

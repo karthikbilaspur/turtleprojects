@@ -2,214 +2,197 @@ import turtle
 import math
 import random
 
-# Create a screen
+# Create a new turtle screen and set its background color
 screen = turtle.Screen()
 screen.bgcolor("black")
 screen.setup(1200, 800)
 
-# Define a function to draw a planet
-def draw_planet(t, radius, color, distance, orbit_radius):
-    t.penup()
-    t.goto(distance, 0)
-    t.pendown()
-    t.fillcolor(color)
-    t.begin_fill()
-    t.circle(radius)
-    t.end_fill()
-
-    # Draw orbit
-    t.penup()
-    t.goto(0, 0)
-    t.pendown()
-    t.color("gray")
-    t.circle(orbit_radius)
-
-# Define a function to draw a ring system
-def draw_rings(t, radius, color, distance, orbit_radius):
-    t.penup()
-    t.goto(distance, 0)
-    t.pendown()
-    t.color(color)
-    t.width(2)
-    t.circle(orbit_radius)
-
-# Define a function to draw a moon
-def draw_moon(t, radius, color, distance, orbit_radius):
-    t.penup()
-    t.goto(distance, 0)
-    t.pendown()
-    t.fillcolor(color)
-    t.begin_fill()
-    t.circle(radius)
-    t.end_fill()
-
-# Draw Sun
+# Create a new turtle object for the sun
 sun = turtle.Turtle()
-sun.speed(0)
+sun.shape("circle")
+sun.color("yellow")
+sun.shapesize(5)
 sun.penup()
 sun.goto(0, 0)
-sun.pendown()
-sun.fillcolor("yellow")
-sun.begin_fill()
-sun.circle(30)
-sun.end_fill()
 
-# Draw Mercury
-mercury = turtle.Turtle()
-mercury.speed(0)
-draw_planet(mercury, 5, "gray", 60, 60)
+# Create a new turtle object for the planets
+planets = [
+    {
+        "name": "Mercury",
+        "color": "gray",
+        "distance": 57.9,
+        "size": 0.5,
+        "moons": [],
+        "diameter": 4879,
+        "mass": 3.3022e23,
+        "orbital_period": 87.97,
+        "rotation_period": 58.65,
+    },
+    {
+        "name": "Venus",
+        "color": "orange",
+        "distance": 108.2,
+        "size": 1.2,
+        "moons": [],
+        "diameter": 12104,
+        "mass": 4.8695e24,
+        "orbital_period": 224.7,
+        "rotation_period": 243.0,
+    },
+    {
+        "name": "Earth",
+        "color": "blue",
+        "distance": 149.6,
+        "size": 1.5,
+        "moons": [
+            {"name": "Moon", "distance": 384400, "size": 0.2}
+        ],
+        "diameter": 12742,
+        "mass": 5.9723e24,
+        "orbital_period": 365.25,
+        "rotation_period": 23.93,
+    },
+    {
+        "name": "Mars",
+        "color": "red",
+        "distance": 227.9,
+        "size": 1,
+        "moons": [
+            {"name": "Phobos", "distance": 6000, "size": 0.1},
+            {"name": "Deimos", "distance": 20000, "size": 0.1},
+        ],
+        "diameter": 6792,
+        "mass": 6.4185e23,
+        "orbital_period": 687.0,
+        "rotation_period": 24.62,
+    },
+    {
+        "name": "Jupiter",
+        "color": "brown",
+        "distance": 778.3,
+        "size": 4,
+        "moons": [
+            {"name": "Io", "distance": 426000, "size": 0.3},
+            {"name": "Europa", "distance": 671000, "size": 0.3},
+            {"name": "Ganymede", "distance": 1070000, "size": 0.4},
+            {"name": "Callisto", "distance": 1880000, "size": 0.4},
+        ],
+        "diameter": 142984,
+        "mass": 1.8986e27,
+        "orbital_period": 4332.6,
+        "rotation_period": 9.93,
+    },
+    {
+        "name": "Saturn",
+        "color": "yellow",
+        "distance": 1427,
+        "size": 3.5,
+        "moons": [
+            {"name": "Titan", "distance": 1222000, "size": 0.5},
+            {"name": "Enceladus", "distance": 238000, "size": 0.2},
+        ],
+        "diameter": 116460,
+        "mass": 5.6846e26,
+        "orbital_period": 10759.2,
+        "rotation_period": 10.66,
+    },
+    {
+        "name": "Uranus",
+        "color": "green",
+        "distance": 2870,
+        "size": 2.5,
+        "moons": [
+            {"name": "Titania", "distance": 435000, "size": 0.3},
+            {"name": "Oberon", "distance": 583000, "size": 0.3},
+        ],
+        "diameter": 50724,
+        "mass": 8.6810e25,
+        "orbital_period": 30687.1,
+        "rotation_period": 17.92,
+    },
+    {
+        "name": "Neptune",
+        "color": "blue",
+        "distance": 4497,
+        "size": 2.5,
+        "moons": [
+            {"name": "Triton", "distance": 354000, "size": 0.3},
+        ],
+        "diameter": 49528,
+        "mass": 1.0243e26,
+        "orbital_period": 60190.0,
+        "rotation_period": 18.11,
+    },
+]
 
-# Draw Venus
-venus = turtle.Turtle()
-venus.speed(0)
-draw_planet(venus, 10, "orange", 100, 100)
+# Function to draw a planet
+def draw_planet(planet):
+    planet_turtle = turtle.Turtle()
+    planet_turtle.shape("circle")
+    planet_turtle.color(planet["color"])
+    planet_turtle.shapesize(planet["size"])
+    planet_turtle.penup()
+    planet_turtle.goto(planet["distance"], 0)
+    planet_turtle.pendown()
+    planet_turtle.write(planet["name"], align="center", font=("Arial", 12, "bold"))
 
-# Draw Earth
-earth = turtle.Turtle()
-earth.speed(0)
-draw_planet(earth, 15, "blue", 140, 140)
-earth_moon = turtle.Turtle()
-earth_moon.speed(0)
-draw_moon(earth_moon, 2, "white", 160, 160)
+    # Draw moons
+    for moon in planet["moons"]:
+        moon_turtle = turtle.Turtle()
+        moon_turtle.shape("circle")
+        moon_turtle.color("gray")
+        moon_turtle.shapesize(moon["size"])
+        moon_turtle.penup()
+        moon_turtle.goto(planet["distance"] + moon["distance"], 0)
+        moon_turtle.pendown()
+        moon_turtle.write(moon["name"], align="center", font=("Arial", 10, "bold"))
 
-# Draw Mars
-mars = turtle.Turtle()
-mars.speed(0)
-draw_planet(mars, 10, "red", 180, 180)
-mars_moon = turtle.Turtle()
-mars_moon.speed(0)
-draw_moon(mars_moon, 2, "white", 200, 200)
+# Draw each planet
+for planet in planets:
+    draw_planet(planet)
 
-# Draw Jupiter
-jupiter = turtle.Turtle()
-jupiter.speed(0)
-draw_planet(jupiter, 30, "brown", 220, 220)
-jupiter_moon = turtle.Turtle()
-jupiter_moon.speed(0)
-draw_moon(jupiter_moon, 5, "white", 240, 240)
+# Create a new turtle object for the planet information
+info_turtle = turtle.Turtle()
+info_turtle.hideturtle()
+info_turtle.penup()
 
-# Draw Saturn
-saturn = turtle.Turtle()
-saturn.speed(0)
-draw_planet(saturn, 25, "yellow", 260, 260)
-draw_rings(saturn, 10, "white", 260, 280)
-saturn_moon = turtle.Turtle()
-saturn_moon.speed(0)
-draw_moon(saturn_moon, 3, "white", 280, 280)
+# Function to display planet information
+def display_info(planet):
+    info_turtle.clear()
+    info_turtle.goto(-600, 200)
+    info_turtle.write(f"Name: {planet['name']}", font=("Arial", 14, "bold"))
+    info_turtle.goto(-600, 150)
+    info_turtle.write(f"Diameter: {planet['diameter']} km", font=("Arial", 14, "bold"))
+    info_turtle.goto(-600, 100)
+    info_turtle.write(f"Mass: {planet['mass']} kg", font=("Arial", 14, "bold"))
+    info_turtle.goto(-600, 50)
+    info_turtle.write(f"Orbital Period: {planet['orbital_period']} days", font=("Arial", 14, "bold"))
+    info_turtle.goto(-600, 0)
+    info_turtle.write(f"Rotation Period: {planet['rotation_period']} hours", font=("Arial", 14, "bold"))
 
-# Draw Uranus
-uranus = turtle.Turtle()
-uranus.speed(0)
-draw_planet(uranus, 20, "green", 300, 300)
-uranus_moon = turtle.Turtle()
-uranus_moon.speed(0)
-draw_moon(uranus_moon, 2, "white", 320, 320)
+# Display planet information on click
+def on_click(x, y):
+    for planet in planets:
+        if math.hypot(x - planet["distance"], y) < 20:
+            display_info(planet)
 
-# Draw Neptune
-neptune = turtle.Turtle()
-neptune.speed(0)
-draw_planet(neptune, 25, "blue", 340, 340)
-neptune_moon = turtle.Turtle()
-neptune_moon.speed(0)
-draw_moon(neptune_moon, 2, "white", 360, 360)
+# Listen for mouse clicks
+screen.onscreenclick(on_click)
 
-# Draw Pluto
-pluto = turtle.Turtle()
-pluto.speed(0)
-draw_planet(pluto, 10, "gray", 380, 380)
-
-# Draw Dwarf Planets
-ceres = turtle.Turtle()
-ceres.speed(0)
-draw_planet(ceres, 5, "brown", 400, 400)
-haumea = turtle.Turtle()
-haumea.speed(0)
-draw_planet(haumea, 5, "blue", 420, 420)
-makemake = turtle.Turtle()
-makemake.speed(0)
-draw_planet(makemake, 5, "green", 440, 440)
-eris = turtle.Turtle()
-eris.speed(0)
-draw_planet(eris, 5, "red", 460, 460)
-
-# Draw Asteroid Belt
-asteroid_belt = turtle.Turtle()
-asteroid_belt.speed(0)
-asteroid_belt.penup()
-asteroid_belt.goto(150, 0)
-asteroid_belt.pendown()
-asteroid_belt.color("gray")
-asteroid_belt.width(2)
-asteroid_belt.circle(150)
-
-# Animate planetary movement
+# Animate the planets
 def animate():
-    sun.right(1)
-    mercury.right(2)
-    venus.right(1.5)
-    earth.right(1)
-    mars.right(2)
-    jupiter.right(0.5)
-    saturn.right(0.8)
-    uranus.right(1.2)
-    neptune.right(1.5)
-    pluto.right(2)
-    ceres.right(1.8)
-    haumea.right(2.2)
-    makemake.right(1.5)
-    eris.right(2.5)
-    screen.ontimer(animate, 10)
+    for planet in planets:
+        planet_turtle = turtle.Turtle()
+        planet_turtle.shape("circle")
+        planet_turtle.color(planet["color"])
+        planet_turtle.shapesize(planet["size"])
+        planet_turtle.penup()
+        planet_turtle.goto(planet["distance"], 0)
+        planet_turtle.pendown()
+        planet_turtle.circle(planet["distance"])
+    screen.ontimer(animate, 100)
 
 animate()
 
-# Hide turtles
-sun.hideturtle()
-mercury.hideturtle()
-venus.hideturtle()
-earth.hideturtle()
-mars.hideturtle()
-jupiter.hideturtle()
-saturn.hideturtle()
-uranus.hideturtle()
-neptune.hideturtle()
-pluto.hideturtle()
-ceres.hideturtle()
-haumea.hideturtle()
-makemake.hideturtle()
-eris.hideturtle()
-
-# Add a text label
-text_turtle = turtle.Turtle()
-text_turtle.hideturtle()
-text_turtle.penup()
-text_turtle.goto(0, -300)
-text_turtle.pendown()
-text_turtle.write("Solar System Simulation", font=("Arial", 24, "bold"))
-
 # Keep the window open
 turtle.done()
-
-"""
-Solar System Simulation
-A 2D animated simulation of the Solar System using Turtle graphics.
-Features
-Animated Planets: The simulation includes animated planets with different sizes, colors, and orbital paths.
-Realistic Orbital Paths: The planets follow realistic orbital paths around the Sun.
-Asteroid Belt: The simulation includes an asteroid belt between the orbits of Mars and Jupiter.
-Dwarf Planets: The simulation includes dwarf planets such as Ceres, Haumea, Makemake, and Eris.
-Requirements
-Python 3.x: The simulation requires Python 3.x to run.
-Turtle Graphics: The simulation uses Turtle graphics for animation.
-Usage
-Run the Script: Run the script using Python (e.g., python solar_system_simulation.py).
-View the Simulation: View the simulation in the Turtle graphics window.
-Customization
-Planet Sizes and Colors: You can customize the sizes and colors of the planets by modifying the draw_planet function.
-Orbital Paths: You can customize the orbital paths of the planets by modifying the animate function.
-License
-This code is released under the MIT License. See LICENSE.txt for details.
-Contributing
-Contributions are welcome! If you'd like to contribute to this project, please fork the repository and submit a pull request.
-Acknowledgments
-Special thanks to the Python and Turtle graphics communities for their support and resources.
-"""

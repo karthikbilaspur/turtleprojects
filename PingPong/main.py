@@ -121,29 +121,3 @@ move_ball()
 # Keep the window open
 turtle.done()
 
-"""
-Pong Game Application
-A simple Pong game application built using Python and the Turtle graphics library.
-Features
-A classic Pong game with two paddles and a ball
-Keyboard controls to move the paddles up and down
-Scoring system to keep track of points
-Simple and intuitive gameplay
-Requirements
-Python 3.x
-Turtle graphics library (included with Python)
-Usage
-Run the script using Python (e.g., python pong_game.py)
-Use the "w" and "s" keys to move the left paddle up and down
-Use the "Up" and "Down" arrow keys to move the right paddle up and down
-Play the game and try to score points!
-Customization
-You can customize the appearance of the game by modifying the sc.bgcolor(), left_pad.color(), right_pad.color(), and hit_ball.color() functions
-You can also add more features, such as sound effects or smoother animations, by modifying the move_ball() function
-License
-This code is released under the MIT License. See LICENSE.txt for details.
-Contributing
-Contributions are welcome! If you'd like to contribute to this project, please fork the repository and submit a pull request.
-Acknowledgments
-Special thanks to the Python and Turtle graphics communities for their support and resources.
-"""

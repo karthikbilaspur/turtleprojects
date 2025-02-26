@@ -110,31 +110,3 @@ randomize_button = turtle.Button(screen, randomize_colors, "Randomize Colors")
 # Keep the window open
 turtle.done()
 
-"""
-A colorful and interactive Turtle graphics project that draws a series of semicircles in different colors.
-Features
-Draws a series of 7 semicircles in different colors
-Allows users to add new colors to the semicircles
-Includes buttons to animate, undo, redo, reset, and randomize colors
-Uses Turtle graphics for a fun and interactive experience
-Requirements
-Python 3.x
-Turtle graphics library (included with Python)
-Usage
-Run the script using Python (e.g., python rainbow_semicircles.py)
-Use the buttons to interact with the semicircles
-Add new colors to the semicircles using the "Add color" button
-Animate the semicircles using the "Animate" button
-Undo and redo changes using the "Undo" and "Redo" buttons
-Reset the semicircles to their original state using the "Reset" button
-Randomize the colors of the semicircles using the "Randomize Colors" button
-Customization
-You can customize the appearance of the semicircles by modifying the colors list and the semi_circle function
-You can also add more features, such as sound effects or smoother animations, by modifying the animate function
-License
-This code is released under the MIT License. See LICENSE.txt for details.
-Contributing
-Contributions are welcome! If you'd like to contribute to this project, please fork the repository and submit a pull request.
-Acknowledgments
-Special thanks to the Python and Turtle graphics communities for their support and resources.
-"""
