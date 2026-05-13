@@ -6,6 +6,20 @@ From classic games to algorithmic visualizers and creative animations
 
 This repository is a curated showcase of mini-projects made using Python's built-in `turtle` module. It's designed for learning, experimenting, and having fun with graphics programming. Whether you're a beginner learning Python or someone revisiting fundamentals through visual code, there's something here for you.
 
+## ⚙️ Configuration
+
+Most projects run with sensible defaults, but you can customize behavior using a `config.py` file. 
+
+**1. Create a config file in any project folder:**
+```python
+# SolarSystem/config.py
+SCREEN_WIDTH = 800
+SCREEN_HEIGHT = 600
+PLANET_SPEED_MULTIPLIER = 1.5
+ENABLE_TRAILS = True
+BACKGROUND_COLOR = "black"
+
+
 The latest update includes new mini projects and an upgraded Solar System simulation.
 
 ## 🎮 Featured Projects
