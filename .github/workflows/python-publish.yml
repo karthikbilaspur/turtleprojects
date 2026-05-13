@@ -1,12 +1,11 @@
-## ⚙️ Configuration
-
-Most projects run with sensible defaults, but you can customize behavior using a `config.py` file. 
-
-**1. Create a config file in any project folder:**
-```python
-# SolarSystem/config.py
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 600
-PLANET_SPEED_MULTIPLIER = 1.5
-ENABLE_TRAILS = True
-BACKGROUND_COLOR = "black"
+name: Check Python
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-python@v5
+      with:
+        python-version: '3.10'
+    - run: python -m compileall.
