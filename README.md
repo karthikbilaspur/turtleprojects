@@ -136,8 +136,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 👨‍💻 Author
 
-**V. Karthik** - [@karthikbilaspur](https://github.com/karthikbilaspur)
-https://www.linkedin.com/in/vasudev-karthik-b889272a7/
+V. Karthik** - [@karthikbilaspur](https://github.com/karthikbilaspur)
+My Linknedin Profile:-  https://www.linkedin.com/in/vasudev-karthik-b889272a7/
 
 If you like this repo, drop a ⭐ and share it! 
 
